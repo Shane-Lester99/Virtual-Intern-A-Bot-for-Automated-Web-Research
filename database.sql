@@ -1,0 +1,35 @@
+CREATE TABLE  User (
+	UserID INT NOT NULL AUTO_INCREMENT,
+	Email varchar(255) NOT NULL,
+	Password TEXT NOT NULL,
+	QueryTableID INT NOT NULL,
+	UNIQUE (Email),
+	PRIMARY KEY (UserID)
+);
+
+CREATE TABLE QueryTable (
+	UserID INT NOT NULL,
+	QueryID INT NOT NULL,
+	FOREIGN KEY (UserID) REFERENCES User(UserID),
+	FOREIGN KEY (QueryID) REFERENCES Query(QueryID)
+);
+
+CREATE TABLE Query (
+	QueryID INT NOT NULL AUTO_INCREMENT,
+	SearchString TEXT NOT NULL,
+	ReferenceLinkID INT NOT NULL,
+	PRIMARY KEY (QueryID)
+);
+
+CREATE TABLE ReferenceLinkTable (
+	QueryID INT NOT NULL,
+	ReferenceLinkID INT NOT NULL
+	FOREIGN KEY (QueryID) REFERENCES Query(QueryID),
+	FOREIGN KEY (ReferenceLinkID) REFERENCES ReferenceLink(ReferenceLinkID)
+);
+
+CREATE TABLE ReferenceLink (
+	ReferenceLinkID INT NOT NULL AUTO_INCREMENT,
+	url TEXT NOT NULL
+	PRIMARY KEY (ReferenceLinkID)
+);
