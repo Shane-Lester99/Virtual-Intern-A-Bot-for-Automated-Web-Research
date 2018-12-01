@@ -55,9 +55,8 @@ def main():
     while True:
         command = input("Please enter a command: ")
         if (command == 'Help'):
-            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrievePossibleAnalysis, \nRetreieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
-        elif (command == "CreateAnalysis"):
-            print("create analysis presses")
+            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetreieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
+        elif (command == "CreateAnalysis"): 
             # Enter search string
             searchString = input("Please enter a string to search: ")
             # Enter list of reference links (1-3), authenticate them
@@ -80,8 +79,8 @@ def main():
             collectData = data_collector.Collect_Data(listOfRefLinks, searchString, int(howManyHitLinks))
             # Pass the Data_Retrieval object to the CreateAnalysis function in the Query clss. 
             queryMaster.createNewQuery(userData[0], collectData.data_retrieval)
-        elif (command == "RetrievePossibleAnalysis"):
-            print("retreive possible analyisis pressed")
+        elif (command == "RetrieveAllAnalysisSummaries"):
+            queryMaster.retrieveAllSummaries(userData[0])
         elif (command == "RetrieveSpecificAnalysis"):
             print("retrieve specific analyisis pressed")
         elif (command == "DeleteSpecificAnalysis"):

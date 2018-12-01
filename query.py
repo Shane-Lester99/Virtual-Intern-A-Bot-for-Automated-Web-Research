@@ -1,6 +1,7 @@
 import mysql.connector
 import data_collector
 
+
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -66,8 +67,31 @@ class Query(object):
                 self.cursor.execute("SELECT @hitLinkId :=  MAX(HitLinkID) FROM HitLink;")
                 self.cursor.execute("INSERT INTO HitLinkTable (HitLinkID, ReferenceLinkID) VALUES (@hitLinkId, @referenceLinkId)")
                 
-
-                
+    def retrieveAllSummaries(self, email):
+        query = """SELECT OtherStuffAndHitLinkId.QueryID, OtherStuffAndHitLinkId.SearchString, OtherStuffAndHitLinkId.ReferenceLinkID, OtherStuffAndHitLinkId.url, OtherStuffAndHitLinkId.HitLinkID, HitLink.url, HitLink.runSummary FROM
+	(SELECT QueryIDAndStringAndRefLinkIDAndRefUrl.QueryID, QueryIDAndStringAndRefLinkIDAndRefUrl.SearchString, QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID, QueryIDAndStringAndRefLinkIDAndRefUrl.Url, HitLinkTable.HitLinkID FROM
+	(SELECT QueryIDAndStringAndRefLinkID.QueryID, QueryIDAndStringAndRefLinkID.SearchString, QueryIDAndStringAndRefLinkID.ReferenceLinkID, ReferenceLink.Url FROM
+    (SELECT EmailAndIDAndString.QueryID, EmailAndIDAndString.SearchString, ReferenceLinkTable.ReferenceLinkID FROM
+	(SELECT Query.QueryID, Query.SearchString, EmailAndID.Email FROM 
+	(SELECT User.Email, QueryTable.QueryID 
+	FROM QueryTable JOIN User ON QueryTable.Email=User.Email where User.email = %s) 
+	as EmailAndID 
+	JOIN Query ON EmailAndID.QueryID=Query.QueryID) 
+	as EmailAndIDAndString
+	JOIN ReferenceLinkTable ON EmailAndIDAndString.QueryID = ReferenceLinkTable.QueryID)
+	as QueryIDAndStringAndRefLinkID
+	JOIN ReferenceLink ON QueryIDAndStringAndRefLinkID.ReferenceLinkID=ReferenceLink.ReferenceLinkID)
+	as QueryIDAndStringAndRefLinkIDAndRefUrl
+	JOIN HitLinkTable ON QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID=HitLinkTable.ReferenceLinkID)
+	as OtherStuffAndHitLinkId
+	JOIN HitLink on OtherStuffAndHitLinkId.HitLinkID = HitLink.HitLinkID;"""
+        self.cursor.execute(query, (email,))
+        results = []
+        i = 0
+        for row in self.cursor.fetchall():
+            results.append({"Query Values: " : [row[0], row[2], row[4]], "Search String: " : row[1], "Reference Link URL: " : row[3], "Hit Link URL: " : row[5], "Summary: " : row[6]})
+            print(results[i])
+            i += 1 
 
     def __use(self):
         return "USE DATABASE " + self.__currentDB
