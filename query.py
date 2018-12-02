@@ -48,8 +48,8 @@ class Query(object):
         # If the account doesnt exist, just exit
         if self.doesAccountExist(email) is False:
             return
-        # We can assume the email exists, because this query can only be called 
-        pass
+        # First we need to get a list of all the possible hit links
+        
 
     # This will store a query from a data retrieval object
     def createNewQuery(self, email, dataObject):
@@ -100,12 +100,9 @@ class Query(object):
 	JOIN HitLink on OtherStuffAndHitLinkId.HitLinkID = HitLink.HitLinkID;"""
         self.cursor.execute(query, (email,))
         results = []
-        i = 0
         for row in self.cursor.fetchall():
             results.append({"Query Values: " : [row[0], row[2], row[4]], "Search String: " : row[1], "Reference Link URL: " : row[3], "Hit Link URL: " : row[5], "Summary: " : row[6]})
-            print(results[i])
-            i += 1 
-
+        return results
     def retrieveSpecificAnalysis(self, email, queryID, rlID, hlID):
         if self.doesAccountExist(email) is False:
             return

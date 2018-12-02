@@ -80,7 +80,9 @@ def main():
             # Pass the Data_Retrieval object to the CreateAnalysis function in the Query clss. 
             queryMaster.createNewQuery(userData[0], collectData.data_retrieval)
         elif (command == "RetrieveAllAnalysisSummaries"):
-            queryMaster.retrieveAllSummaries(userData[0])
+            results = queryMaster.retrieveAllSummaries(userData[0])
+            for row in results:
+                print(row)
         elif (command == "RetrieveSpecificAnalysis"):
             print("Please enter a unique id to specify which analysis to retrieve.")
             print("Tip: To recall which id's are available, enter command 'RetrieveAllAnalysisSummaries'")
