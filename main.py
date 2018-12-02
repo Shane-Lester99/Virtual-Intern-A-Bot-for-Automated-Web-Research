@@ -94,9 +94,28 @@ def main():
             hlNumber = input("Please enter the hit link id here: ")
             while str.isdigit(hlNumber) is False:
                 hlNumber = input("Invalid entry. Please enter the hit link id here: ")
-            queryMaster.retrieveSpecificAnalysis(userData[0], queryNumber, rlNumber, hlNumber) 
+            table = queryMaster.retrieveSpecificAnalysis(userData[0], queryNumber, rlNumber, hlNumber) 
+            if len(table) > 0:
+                print(table)
+            else:
+                print("Query: ", queryNumber, ",", rlNumber, ",", hlNumber, "does not exist or is associated with a different account.")
         elif (command == "DeleteSpecificAnalysis"):
-            print("delete specific analysis pressed")
+            print("Please enter a unique id to specify which analysis to delete.")
+            print("Tip: To recall which id's are available, enter command 'RetrieveAllAnalysisSummaries'")
+            print("and type in the query id, reference link id, and hit link id to delete the analysis")
+            queryNumber = input("Please enter the query id here: ")
+            while str.isdigit(queryNumber) is False:
+                queryNumber = input("Invalid entry. Please enter the query id here: ")
+            rlNumber = input("Please enter the reference link id here: ")
+            while str.isdigit(rlNumber) is False:
+                rlNumber = input("Invalid entry. Please enter the reference link id here: ")
+            hlNumber = input("Please enter the hit link id here: ")
+            while str.isdigit(hlNumber) is False:
+                hlNumber = input("Invalid entry. Please enter the hit link id here: ")
+            ans = input("Are you sure you wish to continue? (Y/N)")
+            if ans is not "Y" and ans is not "y":
+                return 
+            queryMaster.deleteSpecificAnalysis(userData[0], queryNumber, rlNumber, hlNumber)
         elif (command == "DeleteAccount"):
             print("delete account pressed")
         elif (command == "UpdateAnalysis"):

@@ -16,6 +16,7 @@ class Query(object):
         self.__currentDB = "CollectiveConscience"
         self.__use()
         self.cursor = mydb.cursor(buffered = True)
+    # Given an email, this method will check if that email exists in db
     def doesAccountExist(self, email):    
         query = ("SELECT @maxID := COUNT(*) FROM User WHERE Email = %s;")
         self.cursor.execute(query, (email,))
@@ -118,13 +119,43 @@ class Query(object):
         results = []
         i = 0
         for row in self.cursor.fetchall():
-            print(row)
-            #results.append({"Query Values: " : [row[0], row[2], row[4]], "Search String: " : row[1], "Reference Link URL: " : row[3], "Hit Link URL: " : row[5], "Summary: " : row[6]})
-            #print(results[i])
-            #i += 1 
+            results.append(row)
+        return results 
 
-
-
+    def deleteSpecificAnalysis(self, email, queryID, rlID, hlID):
+        # This will make sure the analysis specified exists
+        analysis = self.retrieveSpecificAnalysis(email, queryID, rlID, hlID)
+        if len(analysis) == 0:
+            print("Query: ", queryID, ", ", rlID, ", ", hlID, " does not exist or is not associated with this account.")
+            return
+        # We now know we have the hit link with that id in existence, so we delete it
+        # Note that this will also cascade delete the associated value in HitLinkTable
+        query = "DELETE FROM HitLink WHERE HitLinkID = %s";
+        self.cursor.execute(query, (hlID,))
+        # We now check if that was the last HitLink associated with that reference link
+        # This is done so we dont have any reference links pointing to nothing
+        query = "SELECT * FROM HitLinkTable WHERE ReferenceLinkID = %s;"
+        self.cursor.execute(query, (rlID,))
+        # If we have fetched values from our database, then we exit (there is nothign left to delete)
+        if self.cursor.fetchone() is not None:
+            print("Query: ", queryID, ", ", rlID, ", ", hlID, " has successfully been deleted.")
+            return
+        # If we make it here, we have a dangling reference link, and we need to delete it
+        query = "DELETE FROM ReferenceLink WHERE ReferenceLinkID = %s;"
+        self.cursor.execute(query, (rlID,))
+        # We need to now see if the queryID associated here is now pointing to nothing
+        query = "SELECT * FROM ReferenceLinkTable WHERE QueryID = %s;"
+        self.cursor.execute(query, (queryID,))
+        # If we have retrieved a value here, that means we still have QueryID pointing to referencelinks
+        # Therefore there is nothing left to delete
+        if self.cursor.fetchone() is not None:
+            print("Query: ", queryID, ", ", rlID, ", ", hlID, " has successfully been deleted.")
+            return    
+        # If we reach here, we have a dangling queryID, and we need to delete it
+        query = "DELETE FROM Query WHERE QueryID = %s"
+        self.cursor.execute(query, (queryID,))
+        print("Query: ", queryID, ", ", rlID, ", ", hlID, " has successfully been deleted.")
+        return
     def __use(self):
         return "USE DATABASE " + self.__currentDB
 
