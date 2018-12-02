@@ -55,7 +55,7 @@ def main():
     while True:
         command = input("Please enter a command: ")
         if (command == 'Help'):
-            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetrieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
+            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetrieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteEveryAnalysis \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
         elif (command == "CreateAnalysis"): 
             # Enter search string
             searchString = input("Please enter a string to search: ")
@@ -118,6 +118,8 @@ def main():
             if ans is not "Y" and ans is not "y":
                 return 
             queryMaster.deleteSpecificAnalysis(userData[0], queryNumber, rlNumber, hlNumber)
+        elif (command == "DeleteEveryAnalysis"):
+            queryMaster.deleteEveryAnalysis(userData[0])
         elif (command == "DeleteAccount"):
             print("delete account pressed")
         elif (command == "UpdateAnalysis"):

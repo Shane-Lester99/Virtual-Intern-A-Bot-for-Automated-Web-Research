@@ -44,13 +44,24 @@ class Query(object):
         else:
             print("Account " + email + " already exists.")
 
-    def deleteAccount(self, email):
+    def deleteEveryAnalysis(self, email):
         # If the account doesnt exist, just exit
         if self.doesAccountExist(email) is False:
             return
-        # First we need to get a list of all the possible hit links
-        
+        ans = input("Are you sure you want to delete every analysis? The data is non recoverable. (Y/N) ")
+        if (ans is not "Y" and ans is not "y"):
+            print("Account " + email + " is not being deleted.")
+            return
+        # First we need to get a list of all the possible queries created so we can delete them before deleting the account
+        summaries = self.retrieveAllSummaries(email)
+        for row in summaries:
+            self.deleteSpecificAnalysis(email, row["Query Values: "][0], row["Query Values: "][1], row["Query Values: "][2])
+            #print(email, row[0], row[2], row[4])
 
+        print("Every analysis associated with account " + email + " has been deleted.")
+        return
+     
+        
     # This will store a query from a data retrieval object
     def createNewQuery(self, email, dataObject):
         # For robustness, if the account doesnt exist just exit  
