@@ -44,13 +44,27 @@ class Query(object):
         else:
             print("Account " + email + " already exists.")
 
+    def deleteAccount(self, email):
+        if self.doesAccountExist(email) is False:
+            return False
+        ans = input("Are you sure you want to delete your account. All data will be lost. (Y/N) ")
+        if ans is not "Y" and ans is not "y":
+            print("Account " + email + " will not be deleted.")
+            return False
+        self.deleteEveryAnalysis(email)
+        query = "DELETE FROM User WHERE Email = %s"
+        self.cursor.execute(query, (email,))
+        print("Account " + email + " has been successfully deleted from the database.")
+        return True        
+
+    # This will delete every query associated with an email
     def deleteEveryAnalysis(self, email):
         # If the account doesnt exist, just exit
         if self.doesAccountExist(email) is False:
             return
         ans = input("Are you sure you want to delete every analysis? The data is non recoverable. (Y/N) ")
         if (ans is not "Y" and ans is not "y"):
-            print("Account " + email + " is not being deleted.")
+            print("Account " + email + " queries will not being deleted.")
             return
         # First we need to get a list of all the possible queries created so we can delete them before deleting the account
         summaries = self.retrieveAllSummaries(email)

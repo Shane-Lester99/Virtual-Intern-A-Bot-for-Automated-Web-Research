@@ -121,7 +121,10 @@ def main():
         elif (command == "DeleteEveryAnalysis"):
             queryMaster.deleteEveryAnalysis(userData[0])
         elif (command == "DeleteAccount"):
-            print("delete account pressed")
+            wasAccountDeleted = queryMaster.deleteAccount(userData[0])
+            if wasAccountDeleted is True:
+                print("Goodbye.")
+                return
         elif (command == "UpdateAnalysis"):
             print("update analysis pressed")
         elif (command == "Quit"):
