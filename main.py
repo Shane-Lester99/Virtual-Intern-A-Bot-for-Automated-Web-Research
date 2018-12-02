@@ -55,7 +55,7 @@ def main():
     while True:
         command = input("Please enter a command: ")
         if (command == 'Help'):
-            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetreieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
+            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetrieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
         elif (command == "CreateAnalysis"): 
             # Enter search string
             searchString = input("Please enter a string to search: ")
@@ -82,7 +82,19 @@ def main():
         elif (command == "RetrieveAllAnalysisSummaries"):
             queryMaster.retrieveAllSummaries(userData[0])
         elif (command == "RetrieveSpecificAnalysis"):
-            print("retrieve specific analyisis pressed")
+            print("Please enter a unique id to specify which analysis to retrieve.")
+            print("Tip: To recall which id's are available, enter command 'RetrieveAllAnalysisSummaries'")
+            print("and type in the query id, reference link id, and hit link id to retrieve the analysis")
+            queryNumber = input("Please enter the query id here: ")
+            while str.isdigit(queryNumber) is False:
+                queryNumber = input("Invalid entry. Please enter the query id here: ")
+            rlNumber = input("Please enter the reference link id here: ")
+            while str.isdigit(rlNumber) is False:
+                rlNumber = input("Invalid entry. Please enter the reference link id here: ")
+            hlNumber = input("Please enter the hit link id here: ")
+            while str.isdigit(hlNumber) is False:
+                hlNumber = input("Invalid entry. Please enter the hit link id here: ")
+            queryMaster.retrieveSpecificAnalysis(userData[0], queryNumber, rlNumber, hlNumber) 
         elif (command == "DeleteSpecificAnalysis"):
             print("delete specific analysis pressed")
         elif (command == "DeleteAccount"):

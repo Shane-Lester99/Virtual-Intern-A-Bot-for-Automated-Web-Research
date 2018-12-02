@@ -93,6 +93,38 @@ class Query(object):
             print(results[i])
             i += 1 
 
+    def retrieveSpecificAnalysis(self, email, queryID, rlID, hlID):
+        query = """SELECT MasterTable.searchString, MasterTable.RLURL, MasterTable.HLURL, MasterTable.RunSummary, HitLink.RunSentiment, HitLink.RunWho, HitLink.RunWhat, HitLink.RunWhere  FROM
+	(SELECT OtherStuffAndHitLinkId.QueryID, OtherStuffAndHitLinkId.SearchString, OtherStuffAndHitLinkId.ReferenceLinkID, OtherStuffAndHitLinkId.Url as RLURL, OtherStuffAndHitLinkId.HitLinkID, HitLink.Url as HLURL, HitLink.runSummary FROM
+	(SELECT QueryIDAndStringAndRefLinkIDAndRefUrl.QueryID, QueryIDAndStringAndRefLinkIDAndRefUrl.SearchString, QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID, QueryIDAndStringAndRefLinkIDAndRefUrl.Url, HitLinkTable.HitLinkID FROM
+	(SELECT QueryIDAndStringAndRefLinkID.QueryID, QueryIDAndStringAndRefLinkID.SearchString, QueryIDAndStringAndRefLinkID.ReferenceLinkID, ReferenceLink.Url FROM
+    (SELECT EmailAndIDAndString.QueryID, EmailAndIDAndString.SearchString, ReferenceLinkTable.ReferenceLinkID FROM
+	(SELECT Query.QueryID, Query.SearchString, EmailAndID.Email FROM 
+	(SELECT User.Email, QueryTable.QueryID 
+	FROM QueryTable JOIN User ON QueryTable.Email=User.Email WHERE User.email = %s AND QueryTable.QueryID = %s) 
+	as EmailAndID 
+	JOIN Query ON EmailAndID.QueryID=Query.QueryID) 
+	as EmailAndIDAndString
+	JOIN ReferenceLinkTable ON EmailAndIDAndString.QueryID = ReferenceLinkTable.QueryID WHERE ReferenceLinkTable.ReferenceLinkID = %s)
+	as QueryIDAndStringAndRefLinkID
+	JOIN ReferenceLink ON QueryIDAndStringAndRefLinkID.ReferenceLinkID=ReferenceLink.ReferenceLinkID)
+	as QueryIDAndStringAndRefLinkIDAndRefUrl
+	JOIN HitLinkTable ON QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID=HitLinkTable.ReferenceLinkID WHERE HitLinkTable.HitLinkID = %s)
+	as OtherStuffAndHitLinkId
+	JOIN HitLink on OtherStuffAndHitLinkId.HitLinkID = HitLink.HitLinkID)
+	as MasterTable
+	JOIN HitLink on MasterTable.HitLinkID = HitLink.HitLinkID"""
+        self.cursor.execute(query, (email, queryID, rlID, hlID))
+        results = []
+        i = 0
+        for row in self.cursor.fetchall():
+            print(row)
+            #results.append({"Query Values: " : [row[0], row[2], row[4]], "Search String: " : row[1], "Reference Link URL: " : row[3], "Hit Link URL: " : row[5], "Summary: " : row[6]})
+            #print(results[i])
+            #i += 1 
+
+
+
     def __use(self):
         return "USE DATABASE " + self.__currentDB
 
