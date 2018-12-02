@@ -44,8 +44,18 @@ class Query(object):
         else:
             print("Account " + email + " already exists.")
 
+    def deleteAccount(self, email):
+        # If the account doesnt exist, just exit
+        if self.doesAccountExist(email) is False:
+            return
+        # We can assume the email exists, because this query can only be called 
+        pass
+
     # This will store a query from a data retrieval object
-    def createNewQuery(self, email, dataObject):  
+    def createNewQuery(self, email, dataObject):
+        # For robustness, if the account doesnt exist just exit  
+        if self.doesAccountExist(email) is False:
+            return
         if (dataObject.search_string is None or dataObject.reference_links is None):
             return
         # This will create a new query with the new search string. That will create a new 'highest' query id.
@@ -69,6 +79,8 @@ class Query(object):
                 self.cursor.execute("INSERT INTO HitLinkTable (HitLinkID, ReferenceLinkID) VALUES (@hitLinkId, @referenceLinkId)")
                 
     def retrieveAllSummaries(self, email):
+        if (self.doesAccountExist(email) is False):
+            return
         query = """SELECT OtherStuffAndHitLinkId.QueryID, OtherStuffAndHitLinkId.SearchString, OtherStuffAndHitLinkId.ReferenceLinkID, OtherStuffAndHitLinkId.url, OtherStuffAndHitLinkId.HitLinkID, HitLink.url, HitLink.runSummary FROM
 	(SELECT QueryIDAndStringAndRefLinkIDAndRefUrl.QueryID, QueryIDAndStringAndRefLinkIDAndRefUrl.SearchString, QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID, QueryIDAndStringAndRefLinkIDAndRefUrl.Url, HitLinkTable.HitLinkID FROM
 	(SELECT QueryIDAndStringAndRefLinkID.QueryID, QueryIDAndStringAndRefLinkID.SearchString, QueryIDAndStringAndRefLinkID.ReferenceLinkID, ReferenceLink.Url FROM
@@ -95,6 +107,8 @@ class Query(object):
             i += 1 
 
     def retrieveSpecificAnalysis(self, email, queryID, rlID, hlID):
+        if self.doesAccountExist(email) is False:
+            return
         query = """SELECT MasterTable.searchString, MasterTable.RLURL, MasterTable.HLURL, MasterTable.RunSummary, HitLink.RunSentiment, HitLink.RunWho, HitLink.RunWhat, HitLink.RunWhere  FROM
 	(SELECT OtherStuffAndHitLinkId.QueryID, OtherStuffAndHitLinkId.SearchString, OtherStuffAndHitLinkId.ReferenceLinkID, OtherStuffAndHitLinkId.Url as RLURL, OtherStuffAndHitLinkId.HitLinkID, HitLink.Url as HLURL, HitLink.runSummary FROM
 	(SELECT QueryIDAndStringAndRefLinkIDAndRefUrl.QueryID, QueryIDAndStringAndRefLinkIDAndRefUrl.SearchString, QueryIDAndStringAndRefLinkIDAndRefUrl.ReferenceLinkID, QueryIDAndStringAndRefLinkIDAndRefUrl.Url, HitLinkTable.HitLinkID FROM
@@ -123,6 +137,8 @@ class Query(object):
         return results 
 
     def deleteSpecificAnalysis(self, email, queryID, rlID, hlID):
+        if self.doesAccountExist(email) is False:
+            return
         # This will make sure the analysis specified exists
         analysis = self.retrieveSpecificAnalysis(email, queryID, rlID, hlID)
         if len(analysis) == 0:
