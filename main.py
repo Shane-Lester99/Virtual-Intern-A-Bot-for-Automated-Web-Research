@@ -55,7 +55,7 @@ def main():
     while True:
         command = input("Please enter a command: ")
         if (command == 'Help'):
-            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetrieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteEveryAnalysis \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
+            print("Possible commands: \nHelp, \nCreateAnalysis, \nRetrieveAllAnalysisSummaries, \nRetrieveSpecificAnalysis, \nDeleteSpecificAnalysis, \nDeleteEveryAnalysis, \nDeleteAccount, \nUpdateAnalysis, \nQuit.")
         elif (command == "CreateAnalysis"): 
             # Enter search string
             searchString = input("Please enter a string to search: ")
@@ -126,7 +126,19 @@ def main():
                 print("Goodbye.")
                 return
         elif (command == "UpdateAnalysis"):
-            print("update analysis pressed")
+            print("Please enter a unique id to specify which analysis to delete.")
+            print("Tip: To recall which id's are available, enter command 'RetrieveAllAnalysisSummaries'")
+            print("and type in the query id, reference link id, and hit link id to delete the analysis")
+            queryNumber = input("Please enter the query id here: ")
+            while str.isdigit(queryNumber) is False:
+                queryNumber = input("Invalid entry. Please enter the query id here: ")
+            rlNumber = input("Please enter the reference link id here: ")
+            while str.isdigit(rlNumber) is False:
+                rlNumber = input("Invalid entry. Please enter the reference link id here: ")
+            hlNumber = input("Please enter the hit link id here: ")
+            while str.isdigit(hlNumber) is False:
+                hlNumber = input("Invalid entry. Please enter the hit link id here: ")
+            queryMaster.updateAnalysis(email, queryNumber, rlNumber, hlNumber)
         elif (command == "Quit"):
             print("Exiting program. Goodbye.")
             return

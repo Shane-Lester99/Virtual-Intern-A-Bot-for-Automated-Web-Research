@@ -20,7 +20,7 @@ class Collect_Data(object):
             summary = hit_link_url + " This is the summary!"
             sentiment_analysis = True
             
-            where = hit_link_url + " what!"
+            where = hit_link_url + " where!"
             who = hit_link_url + " who!"
             what = hit_link_url + " what!"
             
@@ -31,8 +31,19 @@ class Collect_Data(object):
             hit_link_obj.run_object = run_obj
             hit_links.append(hit_link_obj)
         return Reference_Links(ref_link_url, hit_links)
-            
-         
+
+# This is a method to return one Data_Retrieval object given one ref link and one hit_link    
+def recall_one_hit_link(search_string,  ref_link_url, hit_link_url):
+    # We need to create an array of one hit link to store in our Reference_Links object
+    hit_links = [Hit_Links(hit_link_url, "raw_content")]
+    # Now we will recreate the the run stage
+    questions = Questions(hit_link_url + " where!", hit_link_url + " who!", hit_link_url + " what!")
+    run_obj = Run(hit_link_url + " summary!", 1, questions)
+    hit_links[0].run_object = run_obj
+    # We then create an array of one reference_links to pass to our Data_Retrieval object
+    reference_links = [Reference_Links(ref_link_url, hit_links)]
+    return Data_Retrieval(reference_links, search_string)
+
 class Data_Retrieval(object):
 	def __init__(self, reference_links, search_string):
 		self.search_string = search_string

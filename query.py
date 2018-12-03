@@ -70,8 +70,6 @@ class Query(object):
         summaries = self.retrieveAllSummaries(email)
         for row in summaries:
             self.deleteSpecificAnalysis(email, row["Query Values: "][0], row["Query Values: "][1], row["Query Values: "][2])
-            #print(email, row[0], row[2], row[4])
-
         print("Every analysis associated with account " + email + " has been deleted.")
         return
      
@@ -194,6 +192,25 @@ class Query(object):
         self.cursor.execute(query, (queryID,))
         print("Query: ", queryID, ", ", rlID, ", ", hlID, " has successfully been deleted.")
         return
+
+    def updateAnalysis(self, email, queryID, rlID, hlID):
+        # Check if the account exists
+        if self.doesAccountExist(email) is False:
+            return
+        returnLinks = self.retrieveSpecificAnalysis(email, queryID, rlID, hlID)
+        # Check if any items were returned
+        if len(returnLinks) is 0:
+            print("Query ", queryID, rlID, hlID, "does not exist or is not associated with this account.")
+            return
+        # Create new data object out of the items from the query
+       # print(returnLinks[0][0], returnLinks[0][1], returnLinks[0][2])      
+        data = data_collector.recall_one_hit_link(returnLinks[0][0], returnLinks[0][1], returnLinks[0][2])              
+        self.deleteSpecificAnalysis(email, queryID, rlID, hlID)
+        self.createNewQuery(email, data)
+        print("Analysis with hit link url " + returnLinks[0][2] + " is now updated")
+        return
+
+
     def __use(self):
         return "USE DATABASE " + self.__currentDB
 
