@@ -1,0 +1,75 @@
+#What happens on python application/database end:
+
+# user entered email address. (Log in to API via email and password). Once authenticated the API will hold the email and password in some sort of secure cache. 
+
+# Email Does not exist, enter it, enter password 
+
+# Email exists, enter password or else be kicked out in 3 attempts
+
+# They are in! Now allow email alone to query information. They can type in these commands (all return JSON objects):
+
+# INTERFACE BELOW:
+
+# HELP
+# User asks for help: they get a list of possible commands
+
+Input Help to API
+
+Help ()
+
+Help returns:
+OUTPUT:
+JSON = {
+"Help" : "Will return this JSON object of menu options.",
+"CreateAnalysis": "Input: Search string, up to 3 reference sites, Output: {"CreationSuccess": True/False} ",
+"RetrieveAllSummaries": "Input: None, Output: [{"QueryID": (1, 2, 3), "SeachString": search_string, "HitLink": hitlink , "Summary": summary}]",
+"RetrieveSpecificAnalysis":  "Input: (x,y,z) where x,y,z is the three values to specify query, Output: {"Summary": summary, "Who": who, "What": what, "Where": where, "SentimentIsPositive": True}"
+"DeleteAnalysis": "Input: (x,y,z) where x,y,z is the three values to specify query, Output:{"DeletionSuccess": True/False } "
+"DeleteAccount": "Input: None, output: {"DeletionSuccess": True/False}"
+"UpdateAnalysis": "Input: (x,y,z) where x,y,z is the three values to specify query, Output: {
+ }
+}
+
+
+# CreateAnalysis
+# User asks to create sentiment analysis. Inputs 1...3 reference links, search string, and 1...10 return requests
+# Returns True or false
+
+CreateAnalysis (search_string, reference_links)
+CreateAnalysis returns:
+{"CreationSuccess": True } or
+{"CreationSuccess": False}
+
+# RetrieveAllSummaries
+# Returns the list with a queryID, search strings, reference links, and a summary of each analysis
+
+RetrieveAllSummaries()
+OUTPUT
+[{"QueryID": (1, 2, 3), "SeachString": search_string, "HitLink": hitlink , "Summary": summary}]
+or if None
+{None}
+
+# RetreieveSpecificAnalsis (queryID, referenceID, hitLinkID)
+# With that list of querID, referenceLinkID, and hitLinkID, retrieve a detailed sentiment analysis on each 
+OUTPUT
+{"Summary": summary, "Who": who, "What": what, "Where": where, "SentimentIsPositive": True}
+
+# DeleteAnalysis (queryID, referenceID, hitLinkID)
+# Can delete an analysis given queryID, referenceLinkID, and hitLinkID
+OUTPUT
+{"DeletionSuccess": True } or
+{"DeletionSuccess": False}
+
+# Delete Account() :
+# Can delete all their queries, account, and id. Exits out of the API.
+OUTPUT
+{"DeletedAccountSuccess": True} 
+{"DeletedAccountFailure": False} 
+
+# Update Analys
+# Given a queryID, update the contents of the sentiment analysis and re-run it with more up to date websites 
+OUTPUT
+{"CreationSuccess": True } or
+{"CreationSuccess": False}
+
+

@@ -78,9 +78,9 @@ class Query(object):
     def createNewQuery(self, email, dataObject):
         # For robustness, if the account doesnt exist just exit  
         if self.doesAccountExist(email) is False:
-            return
+            return False
         if (dataObject.search_string is None or dataObject.reference_links is None):
-            return
+            return False
         # This will create a new query with the new search string. That will create a new 'highest' query id.
         query = "INSERT INTO Query (SearchString) VALUES (%s);"
         self.cursor.execute(query, (dataObject.search_string,))
@@ -100,7 +100,7 @@ class Query(object):
                 self.cursor.execute(query, para)
                 self.cursor.execute("SELECT @hitLinkId :=  MAX(HitLinkID) FROM HitLink;")
                 self.cursor.execute("INSERT INTO HitLinkTable (HitLinkID, ReferenceLinkID) VALUES (@hitLinkId, @referenceLinkId)")
-                
+        return True
     def retrieveAllSummaries(self, email):
         if (self.doesAccountExist(email) is False):
             return
