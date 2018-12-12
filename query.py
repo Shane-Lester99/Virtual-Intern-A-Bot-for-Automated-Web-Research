@@ -1,12 +1,24 @@
 import mysql.connector
 import data_collector
 
+def getDBInfo():
+    x = []
+    f = open("dbinfo.txt", "r")
+    for line in f:
+        x.append(line)
+    return x    
 
+# Init database
+dbInfo = getDBInfo()
+#print(len(dbInfo)) 
+#for i in dbInfo:
+#    print(i)
+# TODO: Must encrypt this before hosting. This is a throw away account on local machine. 
 mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  passwd="Shanelester1",
-  database="CollectiveConscience"
+  host= "localhost",
+  user=  "defaultuser",
+  passwd= "p",
+  database= "CollectiveConscience"
 )
 
 mydb.autocommit = True
@@ -288,7 +300,7 @@ class Query(object):
 
 if __name__ == "__main__":
     query = Query()
-    query.restartDatabase()
+    #query.restartDatabase()
     #query.enterNewUser("shanejlester@gmail.com", "p")
     #print(query.authenticate("shanejlester@gmail.com", "p"))
     #Hit_links1 = Hit_links("wiki/dogFunny.com", None, "web scraping text oreilly")
