@@ -39,9 +39,8 @@ def main():
         if ans is "Y" or ans is "y":
             # Allow user to create an account
             password = input("Please enter password: ")
-            authKey = input("Please enter your auth key: ")
             # TODO: Enter auth key validation here
-            queryMaster.createAccount(email, password, authKey)
+            queryMaster.createAccount(email, password)
         elif ans is "N" or ans is "n":
             print("Answer was no. Exiting program. Goodbye.")
             return
@@ -72,17 +71,21 @@ def main():
                      link = input("False link. Please try again.\nReference link " + str(i + 1) + ": ")
                 listOfRefLinks.append(link)        
             # Enter how many hit links you would like back (1-10)
-            howManyHitLinks = input("Please enter how many hit links would you like to get back to be analyzed (1-10 per query): ")
-            while str.isdigit(howManyHitLinks) is False or int(howManyHitLinks) > 10 or int(howManyHitLinks) < 1:   
-                howManyHitLinks = input("Not a number between 1 and 10. Please try again: ")
+            howManyHitLinks = input("Please enter how many hit links would you like to get back to be analyzed (1-25 per query): ")
+            while str.isdigit(howManyHitLinks) is False or int(howManyHitLinks) > 25 or int(howManyHitLinks) < 1:   
+                howManyHitLinks = input("Not a number between 1 and 25. Please try again: ")
             # Call Data_Collector.Collect_Data to return the data retrieval object
-            collectData = data_collector.Collect_Data(listOfRefLinks, searchString, int(howManyHitLinks))
-            # Pass the Data_Retrieval object to the CreateAnalysis function in the Query clss. 
-            queryMaster.createNewQuery(userData[0], collectData.data_retrieval)
+            collectData = data_collector.collect(listOfRefLinks, searchString, int(howManyHitLinks))
+            if collectData is not None:
+                # Pass the Data_Retrieval object to the CreateAnalysis function in the Query clss. 
+                queryMaster.createNewQuery(userData[0], collectData)
         elif (command == "RetrieveAllAnalysisSummaries"):
             results = queryMaster.retrieveAllSummaries(userData[0])
-            for row in results:
-                print(row)
+            if len(results) == 0:
+                print("No analyses stored.")
+            else: 
+                for row in results:
+                    print(row)
         elif (command == "RetrieveSpecificAnalysis"):
             print("Please enter a unique id to specify which analysis to retrieve.")
             print("Tip: To recall which id's are available, enter command 'RetrieveAllAnalysisSummaries'")

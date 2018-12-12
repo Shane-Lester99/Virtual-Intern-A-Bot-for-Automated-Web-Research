@@ -35,10 +35,10 @@ class Query(object):
         else:
             return False
     # This will enter a new user into our database
-    def createAccount(self, email, password, authKey):
+    def createAccount(self, email, password):
         if (self.doesAccountExist(email) is False):  
-            query = ("INSERT INTO User (Email, Password, authKey) VALUES (%s, %s, %s);");
-            self.cursor.execute(query, (email, password, authKey))
+            query = ("INSERT INTO User (Email, Password) VALUES (%s, %s);");
+            self.cursor.execute(query, (email, password))
             print("Account " + email + " has been sucessfully entered into db")
             return True
         else:
@@ -197,28 +197,100 @@ class Query(object):
         # Check if the account exists
         if self.doesAccountExist(email) is False:
             return
+        print("Retrieving query...")
         returnLinks = self.retrieveSpecificAnalysis(email, queryID, rlID, hlID)
         # Check if any items were returned
         if len(returnLinks) is 0:
             print("Query ", queryID, rlID, hlID, "does not exist or is not associated with this account.")
             return
-        # Create new data object out of the items from the query
-       # print(returnLinks[0][0], returnLinks[0][1], returnLinks[0][2])      
-        data = data_collector.recall_one_hit_link(returnLinks[0][0], returnLinks[0][1], returnLinks[0][2])              
+        print("Query found.")
+        # Create new data object out of the items from the query      
+        data = data_collector.recall_one_hit_link(returnLinks[0][0], returnLinks[0][1], returnLinks[0][2])
+        if data is None:
+            return              
         self.deleteSpecificAnalysis(email, queryID, rlID, hlID)
         self.createNewQuery(email, data)
         print("Analysis with hit link url " + returnLinks[0][2] + " is now updated")
         return
-
-
+    def restartDatabase(self):
+        tables = ["QueryTable;", "ReferenceLinkTable;", "HitLinkTable;", "User;", "Query;", "ReferenceLink;", "HitLink;"]
+        query = "DROP TABLE "
+        for i in range(0, len(tables), 1):
+            self.cursor.execute(query + tables[i])
+        self.createAllTables()
+    def createAllTables(self):
+        tables = [];
+        tables.append("""
+        CREATE TABLE  User (
+	     Email varchar(255) NOT NULL,
+	     Password TEXT NOT NULL,
+	     PRIMARY KEY (Email)
+        );""")
+        tables.append("""
+        CREATE TABLE Query (
+	     QueryID INT NOT NULL AUTO_INCREMENT,
+	     SearchString TEXT NOT NULL,
+	     PRIMARY KEY (QueryID)
+        );
+        """)
+        tables.append("""
+        CREATE TABLE ReferenceLink (
+	    ReferenceLinkID INT NOT NULL AUTO_INCREMENT,
+	    Url TEXT NOT NULL,
+	    PRIMARY KEY (ReferenceLinkID)
+        );
+        """)
+        tables.append("""
+        CREATE TABLE HitLink (
+	    HitLinkID INT NOT NULL AUTO_INCREMENT,
+	    Url TEXT NOT NULL,
+	    RawContent TEXT NOT NULL, 
+	    RunSentiment BOOLEAN NOT NULL,
+	    RunWhere TEXT NOT NULL, 
+	    RunWho TEXT NOT NULL,
+	    RunWhat TEXT NOT NULL,
+	    RunSummary TEXT NOT NULL,
+	    PRIMARY KEY (HitLinkID)	
+        );
+        """)
+        tables.append("""
+        CREATE TABLE QueryTable (
+	    Email varchar(255) NOT NULL,
+	    QueryID INT NOT NULL,
+	    FOREIGN KEY (Email) REFERENCES User(Email),
+	    FOREIGN KEY (QueryID) REFERENCES Query(QueryID) ON DELETE CASCADE,
+	    PRIMARY KEY (Email, QueryID)
+        );
+        """)
+        tables.append("""
+        CREATE TABLE ReferenceLinkTable (
+	    QueryID INT NOT NULL,
+	    ReferenceLinkID INT NOT NULL,
+	    FOREIGN KEY (QueryID) REFERENCES Query(QueryID),
+	    FOREIGN KEY (ReferenceLinkID) REFERENCES ReferenceLink(ReferenceLinkID) ON DELETE CASCADE,
+	    Primary Key (QueryID, ReferenceLinkID)
+        );
+        """)
+        tables.append("""
+        CREATE TABLE HitLinkTable (
+	    HitLinkID INT NOT NULL,
+	    ReferenceLinkID INT NOT NULL,
+	    FOREIGN KEY (ReferenceLinkID) REFERENCES ReferenceLink(ReferenceLinkID),
+	    FOREIGN KEY (HitLinkID) REFERENCES HitLink(HitLinkID) ON DELETE CASCADE,
+	    Primary Key (HitLinkID, ReferenceLinkID)
+        );
+        """)
+        for i in range(0, len(tables), 1):
+            self.cursor.execute(tables[i])
     def __use(self):
         return "USE DATABASE " + self.__currentDB
 
 
 if __name__ == "__main__":
     query = Query()
-    query.enterNewUser("shanejlester@gmail.com", "p")
-    print(query.authenticate("shanejlester@gmail.com", "p"))
+    query.restartDatabase()
+    #query.enterNewUser("shanejlester@gmail.com", "p")
+    #print(query.authenticate("shanejlester@gmail.com", "p"))
     #Hit_links1 = Hit_links("wiki/dogFunny.com", None, "web scraping text oreilly")
     #Hit_links2 = Hit_links("wiki/dogCrazy.com", None, "web scraping text oreilly")
     #arrayHLA = [Hit_links1, Hit_links2]
