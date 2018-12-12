@@ -99,9 +99,9 @@ def check_url(results_url):
 def search(search, link_num):
     try:
         service = build("customsearch", "v1",
-            developerKey="AIzaSyBD9ZOK0SnCn_lzpLtSAezUI7yUVfUJ2pE")
+            developerKey= getKeys()[0])
         res = service.cse().list(q=search,
-      cx='017225943151680571230:hr5srssdquy').execute()
+      cx=getKeys()[1]).execute()
     except httplib2.ServerNotFoundError as err:
         print("Error: ", err, "Consider checking network connection.")
         return None
@@ -142,6 +142,13 @@ def search(search, link_num):
     #print("hits ", hits)
     #print("len(hits) ", len(hits))
     return hits
+
+def getKeys():
+    x = []
+    file = open("keys.txt", "r")
+    for line in file:
+        x.append(line)
+    return x
 
 def put_in(site, hits):
     #print("len(hits) ", len(hits))
