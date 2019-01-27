@@ -6,4 +6,6 @@
 
 - Interface gives the 'feel' of having a personal research intern (hence the name)
 
+- Python/ Flask,  MySQL backend. Frontend React-Redux. Fullstack application.
+
 
