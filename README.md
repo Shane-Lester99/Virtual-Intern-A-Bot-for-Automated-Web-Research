@@ -2,13 +2,8 @@
 
 ## What it is
 
-This is an application which will provide a service via RESTful API
-to retreive various information about a search including whether the
-returned websites are positive/ negative, who was in the article, what
-was the article about, the date the page was released, and a summary of
-the article.
+- Utilizes IBM's natural language processing and the google custom search API to provide automated 'google search' research and summarizations of topics of interests to clients.
+
+- Interface gives the 'feel' of having a personal research intern (hence the name)
 
 
-## Contributers:
-
-- Shane Lester, Ricky Chan, Edward Lamb, Ruby Lin, and Shani Saar
