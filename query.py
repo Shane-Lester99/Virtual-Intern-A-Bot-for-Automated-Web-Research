@@ -1,18 +1,8 @@
 import mysql.connector
 import data_collector
 
-def getDBInfo():
-    x = []
-    f = open("dbinfo.txt", "r")
-    for line in f:
-        x.append(line)
-    return x    
 
-# Init database
-dbInfo = getDBInfo()
-#print(len(dbInfo)) 
-#for i in dbInfo:
-#    print(i)
+
 # TODO: Must encrypt this before hosting. This is a throw away account on local machine. 
 mydb = mysql.connector.connect(
   host= "localhost",
