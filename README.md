@@ -7,3 +7,5 @@ Using backend Python code, a SQL relational database, the google custom search A
 The process goes like this: the user inputs a list of websites with a research keyword. Each link is automatically examined for the keyword. If the word is found the document is broken down by various natural language processing methods and stored as summary statistics for the user. This interface can then be cleared, saved, or added too depending on the users needs. 
 
 Currently the interface is a command line application and the NLP layer is extremely simple. It can be easily extended using the TextBlob library to create a more sophisticated summary statistic interface. A frontend is also needed but would be extremely simple to implement. All the core logic is implemented.
+
+The last major update was in December 2018.
