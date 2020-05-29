@@ -1,17 +1,9 @@
 #  Virtual Intern
 
-## What it is
+Virtual intern automates the process of research and gives a storage interface to summarized documents. The ideal user is anyone who wants quick summaries of a large amount of documents from web links for personal or commercial use.
 
-- Uses the google custom search api to automate the research, clicking and scrolling of using google search
+Using backend Python code, a SQL relational database, the google custom search API, and a simple Natural Language Processing TextBlob, a large amount of links can be examined and summarized, automating the process of research. The experience is similar to having a personal research intern bot that can perform summaries of research for the user. 
 
-- Written in Python and Sql
+The process goes like this: the user inputs a list of websites with a research keyword. Each link is automatically examined for the keyword. If the word is found the document is broken down by various natural language processing methods and stored as summary statistics for the user. This interface can then be cleared or saved or added to depending on the users research interests. 
 
-## How it works
-
-- The application takes in a set of websites at runtime and a keyword.
-
-- Google is queried to receive the union of those links that also provide that keyword most frequently in that document
-
-- The results are saved, stored, and can be queried
-
-- The html page of the website is saved for analysis
+Currently this application is a command line application and the NLP layer is extremely simple. It can be easily extended using the TextBlob library to create a more sophisticated summary statistic interface. A frontend is also needed but would be extremely simple to implement.
