@@ -12,7 +12,7 @@ mysql-connector==2.1.6
 pyasn1==0.4.5
 pyasn1-modules==0.2.4
 requests==2.21.0
-rsa==4.0
+rsa==4.1
 six==1.12.0
 soupsieve==1.8
 uritemplate==3.0.0
